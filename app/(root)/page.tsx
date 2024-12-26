@@ -1,11 +1,19 @@
-import { create } from "@/actions/create";
 import { Projects } from "@/components/Projects";
 import { client } from "@/sanity/lib/client";
 import { PROJECT_FETCH_QUERY } from "@/sanity/lib/queries";
+import { createClient } from 'next-sanity';
 
-
+const sanityClient = createClient({
+	projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+	dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
+	apiVersion: '2023-01-01',
+	useCdn: true,
+  });
+  
+  export const revalidate = 10; // Revalidate every 10 seconds
+  
 export default async function Home() {
-  const projects = await client.fetch(PROJECT_FETCH_QUERY);
+  const projects = await sanityClient.fetch(PROJECT_FETCH_QUERY);
   return (
  <>
  {projects?.length > 0 ? (
